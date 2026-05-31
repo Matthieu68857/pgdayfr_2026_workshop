@@ -1,6 +1,37 @@
 # PGDay France 2026 - Atelier : Créez votre premier agent IA avec PostgreSQL
 
-## Introduction
+## Sommaire
+
+1. [Introduction](https://github.com/Matthieu68857/pgdayfr_2026_workshop#1-introduction)
+2. [Avant de commencer](https://github.com/Matthieu68857/pgdayfr_2026_workshop#2-avant-de-commencer)
+   - 2.1. [Accéder à votre environnement Google Cloud](https://github.com/Matthieu68857/pgdayfr_2026_workshop#21-accéder-à-votre-environnement-google-cloud)
+3. [Créer l'instance PostgreSQL](https://github.com/Matthieu68857/pgdayfr_2026_workshop#3-créer-linstance-postgresql)
+4. [Préparer la base de données météo et sécurité](https://github.com/Matthieu68857/pgdayfr_2026_workshop#4-préparer-la-base-de-données-météo-et-sécurité)
+   - 4.1. [Créer la base de données dédiée et se connecter à Cloud SQL Studio](https://github.com/Matthieu68857/pgdayfr_2026_workshop#41-créer-la-base-de-données-dédiée-et-se-connecter-à-cloud-sql-studio)
+   - 4.2. [Création des tables et des données d'exemple](https://github.com/Matthieu68857/pgdayfr_2026_workshop#42-création-des-tables-et-des-données-dexemple)
+   - 4.3. [Mettre en œuvre la sécurité et la gouvernance (Privilèges et RLS)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#43-mettre-en-œuvre-la-sécurité-et-la-gouvernance-privilèges-et-rls)
+5. [Configurer MCP Toolbox for databases](https://github.com/Matthieu68857/pgdayfr_2026_workshop#5-configurer-mcp-toolbox-for-databases)
+   - 5.1. [Installation de Toolbox](https://github.com/Matthieu68857/pgdayfr_2026_workshop#51-installation-de-toolbox)
+   - 5.2. [Création du fichier tools.yaml](https://github.com/Matthieu68857/pgdayfr_2026_workshop#52-création-du-fichier-toolsyaml)
+   - 5.3. [Comprendre la structure de configuration](https://github.com/Matthieu68857/pgdayfr_2026_workshop#53-comprendre-la-structure-de-configuration)
+   - 5.4. [Lancement du serveur avec Interface UI](https://github.com/Matthieu68857/pgdayfr_2026_workshop#54-lancement-du-serveur-avec-interface-ui)
+   - 5.5. [Tester les outils via l'interface visuelle (Toolbox UI)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#55-tester-les-outils-via-linterface-visuelle-toolbox-ui)
+6. [Écrire notre agent avec l'Agent Development Kit (ADK)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#6-écrire-notre-agent-avec-lagent-development-kit-adk)
+   - 6.1. [Comprendre le rôle des agents dans l'ADK](https://github.com/Matthieu68857/pgdayfr_2026_workshop#61-comprendre-le-rôle-des-agents-dans-ladk)
+   - 6.2. [Initialisation du projet ADK](https://github.com/Matthieu68857/pgdayfr_2026_workshop#62-initialisation-du-projet-adk)
+7. [Connecter notre agent à nos outils de données météo](https://github.com/Matthieu68857/pgdayfr_2026_workshop#7-connecter-notre-agent-à-nos-outils-de-données-météo)
+   - 7.1. [Modifier le fichier agent.py](https://github.com/Matthieu68857/pgdayfr_2026_workshop#71-modifier-le-fichier-agentpy)
+   - 7.2. [Lancer et Tester l'Agent en Mode Web](https://github.com/Matthieu68857/pgdayfr_2026_workshop#72-lancer-et-tester-lagent-en-mode-web)
+   - 7.3. [Intégrer Google Search pour enrichir les bulletins d'anecdotes](https://github.com/Matthieu68857/pgdayfr_2026_workshop#73-intégrer-google-search-pour-enrichir-les-bulletins-danecdotes)
+8. [Défi : L'Agent DBA et Admin PostgreSQL (Non guidé)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#8-défi--lagent-dba-et-admin-postgresql-non-guidé)
+   - 8.1. [Le but à atteindre](https://github.com/Matthieu68857/pgdayfr_2026_workshop#81-le-but-à-atteindre)
+   - 8.2. [Grandes lignes pour réussir le défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#82-grandes-lignes-pour-réursir-le-défi)
+   - 8.3. [Scénarios de test pour valider votre défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#83-scénarios-de-test-pour-valider-votre-défi)
+9. [Félicitations !](https://github.com/Matthieu68857/pgdayfr_2026_workshop#9-félicitations)
+
+---
+
+## 1. Introduction
 
 Durée : 5:00
 
@@ -36,11 +67,11 @@ Tout au long de cet atelier, vous suivrez une approche progressive :
 
 ---
 
-## Avant de commencer
+## 2. Avant de commencer
 
 Durée : 5:00
 
-### Accéder à votre environnement Google Cloud
+### 2.1. Accéder à votre environnement Google Cloud
 
 > [!IMPORTANT]
 > Pour cet atelier, **chaque participant recevra des identifiants individuels et un projet Google Cloud dédié** au début de la session. Il n'est donc pas nécessaire de créer un nouveau projet, d'utiliser votre compte personnel ou de configurer la facturation (billing).
@@ -73,7 +104,7 @@ gcloud services enable cloudresourcemanager.googleapis.com \
 
 ---
 
-## Créer l'instance PostgreSQL
+## 3. Créer l'instance PostgreSQL
 
 Durée : 10:00
 
@@ -95,13 +126,13 @@ gcloud sql instances create weatherdb-instance \
 
 ---
 
-## Préparer la base de données météo & Sécurité
+## 4. Préparer la base de données météo et sécurité
 
 Durée : 15:00
 
 Nous allons maintenant structurer notre base de données historique avec des relevés climatiques, puis mettre en place une gouvernance d'accès stricte pour sécuriser les données sensibles.
 
-### 1. Créer la base de données dédiée et se connecter à Cloud SQL Studio
+### 4.1. Créer la base de données dédiée et se connecter à Cloud SQL Studio
 
 1. Rendez-vous sur la [page Cloud SQL](https://console.cloud.google.com/sql/instances) dans la console Cloud.
 2. Cliquez sur **`weatherdb-instance`**.
@@ -113,7 +144,7 @@ Nous allons maintenant structurer notre base de données historique avec des rel
    ```
 6. Une fois la base de données créée, déconnectez-vous (ou rechargez la page) et connectez-vous à nouveau en choisissant cette fois-ci la base de données **`weather_db`** (avec le même utilisateur `postgres` et mot de passe `postgres`).
 
-### 2. Création des tables et des données d'exemple
+### 4.2. Création des tables et des données d'exemple
 
 Dans l'éditeur SQL, exécutez le script suivant pour créer la table des relevés historiques `climat_history` et la table des bulletins rédigés `weather_bulletins` :
 
@@ -167,7 +198,7 @@ VALUES
  ('2026-05-25', 'Paris', 18.5, 'Ensoleillé', 'Bonjour Paris ! Aujourd''hui, un soleil radieux vous attend avec des températures printanières agréables de 18.5°C. C''est l''occasion parfaite pour flâner près de la Seine ou visiter le fameux Jardin du Luxembourg.', FALSE);
 ```
 
-### 3. Mettre en œuvre la Sécurité et la Gouvernance (Privilèges et RLS)
+### 4.3. Mettre en œuvre la sécurité et la gouvernance (Privilèges et RLS)
 
 > [!IMPORTANT]
 > **Principe de moindre privilège :** L'agent IA ne doit jamais utiliser le compte administrateur (`postgres`) pour requêter la base de données. Si l'agent subissait une injection d'instructions ("Prompt Injection"), un attaquant pourrait altérer ou supprimer des tables.
@@ -212,7 +243,7 @@ CREATE POLICY bulletins_update_policy ON weather_bulletins
 
 ---
 
-## Configurer MCP Toolbox for databases
+## 5. Configurer MCP Toolbox for databases
 
 Durée : 20:00
 
@@ -229,7 +260,7 @@ Toolbox se situe entre le framework d'orchestration de votre application et votr
 
 Vous pouvez voir que l'une des bases de données prises en charge par MCP Toolbox for databases est Cloud SQL et nous l'avons provisionnée dans la section précédente. 
 
-### **Installation de Toolbox**
+### 5.1. Installation de Toolbox
 
 Ouvrez le terminal Cloud Shell et créez un dossier nommé **`mcp-toolbox`**. 
 
@@ -252,7 +283,7 @@ Vérifiez que l'installation fonctionne en affichant la version :
 ./toolbox -v
 ```
 
-### 2. Création du fichier `tools.yaml`
+### 5.2. Création du fichier tools.yaml
 
 Le fichier `tools.yaml` permet de déclarer les sources de données (bases PostgreSQL) et d'associer des requêtes SQL paramétrées sous forme de fonctions documentées (outils) interprétables par les LLMs.
 
@@ -363,7 +394,7 @@ tools:
 > [!TIP]
 > Remarquez l'usage des variables `$1`, `$2`, etc. dans l'attribut `statement`. MCP Toolbox utilise des **requêtes préparées/paramétrées** sous le capot. Cela empêche toute vulnérabilité d'injection SQL au niveau applicatif !
 
-### **Comprendre la structure de configuration**
+### 5.3. Comprendre la structure de configuration
 
 Comprenons brièvement ce fichier :
 
@@ -373,7 +404,7 @@ Comprenons brièvement ce fichier :
 
 3. **Enfin, nous avons le Toolset**, qui vous permet de définir des groupes d'outils que vous souhaitez charger ensemble. Cela peut être utile pour définir différents groupes en fonction de l'agent ou de l'application. Dans notre cas, nous avons un seul ensemble d'outils appelé **`weather_toolset`**, qui contient les deux outils météo que nous avons définis. 
 
-### 3. Lancement du serveur avec Interface UI
+### 5.4. Lancement du serveur avec Interface UI
 
 Lancez le serveur MCP Toolbox en activant l'option UI locale :
 
@@ -391,7 +422,7 @@ INFO "Server ready to serve!"
 INFO "Toolbox UI is up and running at: http://127.0.0.1:5000/ui"
 ```
 
-### 4. Tester les outils via l'interface visuelle (Toolbox UI)
+### 5.5. Tester les outils via l'interface visuelle (Toolbox UI)
 
 1. Cliquez sur le bouton **Aperçu sur le Web** dans Cloud Shell, puis sélectionnez **Changer de port** pour pointer sur le port `5000`.
 2. Ajoutez manuellement **`/ui`** à la fin de l'URL de votre navigateur.
@@ -400,19 +431,19 @@ INFO "Toolbox UI is up and running at: http://127.0.0.1:5000/ui"
 
 ---
 
-## Écrire notre agent avec l'Agent Development Kit (ADK)
+## 6. Écrire notre agent avec l'Agent Development Kit (ADK)
 
 Durée : 20:00
 
 L'**Agent Development Kit (ADK)** de Google permet de structurer de véritables agents IA autonomes à l'aide de frameworks Python, capables d'orchestrer dynamiquement des appels d'outils, de planifier des tâches complexes et de tenir des conversations.
 
-### **Comprendre le rôle des agents dans l'ADK**
+### 6.1. Comprendre le rôle des agents dans l'ADK
 
 Selon la [documentation de l'ADK](https://adk.dev/agents/), un agent est une unité d'exécution autonome conçue pour agir de manière autonome afin d'atteindre des objectifs spécifiques. Les agents peuvent effectuer des tâches, interagir avec les utilisateurs, utiliser des outils externes et se coordonner avec d'autres agents.
 
 Plus précisément, un **`LLMAgent`**, communément appelé Agent, utilise de grands modèles de langage (LLM) comme moteur principal pour comprendre le langage naturel, raisonner, planifier, générer des réponses et décider de manière dynamique de la marche à suivre ou des outils à utiliser, ce qui les rend idéaux pour les tâches flexibles centrées sur le langage. Pour en savoir plus sur les agents LLM, vous pouvez consulter la [documentation ADK sur les agents](https://adk.dev/agents/llm-agents/).
 
-### 1. Initialisation du projet ADK
+### 6.2. Initialisation du projet ADK
 
 Ouvrez un nouveau terminal et créez votre espace de développement Python :
 
@@ -447,13 +478,13 @@ Cela génère l'arborescence suivante dans le dossier `weather_agent_app` :
 
 ---
 
-## Connecter notre agent à nos outils de données météo
+## 7. Connecter notre agent à nos outils de données météo
 
 Durée : 10:00
 
 Nous allons configurer notre agent ADK pour qu'il charge dynamiquement l'ensemble d'outils (Toolset) de notre serveur MCP Toolbox, puis l'utiliser pour répondre aux questions des utilisateurs.
 
-### 1. Modifier le fichier `agent.py`
+### 7.1. Modifier le fichier agent.py
 
 Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le code suivant pour orchestrer nos requêtes SQL :
 
@@ -491,7 +522,7 @@ root_agent = Agent(
 )
 ```
 
-### 2. Lancer et Tester l'Agent en Mode Web
+### 7.2. Lancer et Tester l'Agent en Mode Web
 
 Depuis votre terminal (en vous assurant d'être dans le dossier parent `my-weather-agents`), lancez le serveur web interactif fourni par l'ADK :
 
@@ -519,7 +550,7 @@ L'agent va analyser vos questions, appeler de façon autonome les outils SQL sé
 
 ---
 
-### 3. Étape supplémentaire : Intégrer Google Search pour enrichir les bulletins d'anecdotes
+### 7.3. Intégrer Google Search pour enrichir les bulletins d'anecdotes
 
 Pour rendre notre assistant météo encore plus captivant, nous allons lui permettre d'enrichir automatiquement ses bulletins rédigés avec des **anecdotes locales historiques ou culturelles** trouvées sur le Web en temps réel.
 
@@ -580,7 +611,7 @@ Vous verrez physiquement apparaître dans votre table SQL le bulletin météo co
 
 ---
 
-## Partie 2 (Défi) : L'Agent DBA / Admin PostgreSQL (Non guidé)
+## 8. Défi : L'Agent DBA et Admin PostgreSQL (Non guidé)
 
 Durée : 30:00 (À titre indicatif)
 
@@ -588,12 +619,12 @@ Pour aller plus loin et tester vos compétences acquises, vous allez concevoir u
 
 Cet agent n'aura plus pour rôle d'analyser la météo, mais d'aider un administrateur système à surveiller, diagnostiquer et optimiser l'instance PostgreSQL en interrogeant directement les vues système et le catalogue PostgreSQL.
 
-### **Le But à atteindre**
+### 8.1. Le but à atteindre
 Créer un agent capable de répondre en langage naturel à des questions sur l'état de la base de données, ses performances et son intégrité (ex: tables les plus lourdes, index inutilisés, requêtes lentes actives).
 
 ---
 
-### **Grandes lignes pour réussir le défi**
+### 8.2. Grandes lignes pour réussir le défi
 
 #### **1. Sécurité et Privilèges (SQL)**
 L'agent DBA a besoin d'accéder aux statistiques système de PostgreSQL. Plutôt que de lui donner le rôle de superutilisateur `postgres` (ce qui serait une mauvaise pratique de sécurité), utilisez le principe du moindre privilège.
@@ -647,7 +678,7 @@ Voici des exemples de requêtes SQL utiles à implémenter comme outils MCP :
 
 ---
 
-### **Scénarios de test pour valider votre défi**
+### 8.3. Scénarios de test pour valider votre défi
 Une fois l'agent fonctionnel, testez-le dans la console interactive en posant des questions comme :
 1. *"Quelles sont les tables les plus volumineuses de ma base de données et combien d'espace les index consomment-ils ?"*
 2. *"Y a-t-il des requêtes actives lentes ou bloquées en ce moment ?"*
@@ -659,7 +690,7 @@ Une fois l'agent fonctionnel, testez-le dans la console interactive en posant de
 
 ---
 
-## Félicitations !
+## 9. Félicitations !
 
 Vous avez construit avec succès un agent IA **expert météo de bout en bout** connecté à une base de données **PostgreSQL** via l'architecture **MCP**.
 
