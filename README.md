@@ -114,7 +114,7 @@ Exécutez la commande suivante dans votre terminal Cloud Shell pour créer l'ins
 
 ```bash
 gcloud sql instances create weatherdb-instance \
---database-version=POSTGRES_15 \
+--database-version=POSTGRES_18 \
 --tier db-g1-small \
 --region=us-central1 \
 --edition=ENTERPRISE \
