@@ -116,7 +116,7 @@ Exécutez la commande suivante dans votre terminal Cloud Shell pour créer l'ins
 gcloud sql instances create weatherdb-instance \
 --database-version=POSTGRES_18 \
 --tier db-g1-small \
---region=us-central1 \
+--region=europe-west1 \
 --edition=ENTERPRISE \
 --root-password=postgres
 ```
@@ -294,7 +294,7 @@ kind: source
 name: weather-cloud-sql-source
 type: cloud-sql-postgres
 project: YOUR_PROJECT_ID # Remplacer par votre ID de projet Google Cloud
-region: us-central1
+region: europe-west1
 instance: weatherdb-instance
 database: weather_db
 user: agent_user       # Utilisation du compte sécurisé avec RLS activé !
@@ -469,7 +469,7 @@ adk create weather_agent_app
 Lors de l'initialisation :
 1. Choisissez le modèle **`gemini-2.5-flash`** pour l'agent racine.
 2. Sélectionnez **`Vertex AI`** comme fournisseur de backend.
-3. Entrez votre ID de projet Google Cloud et la région par défaut (`us-central1`).
+3. Entrez votre ID de projet Google Cloud et la région par défaut (`europe-west1`).
 
 Cela génère l'arborescence suivante dans le dossier `weather_agent_app` :
 * `.env` : Contient les informations d'authentification Cloud.
