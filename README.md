@@ -16,16 +16,18 @@
    - 5.3. [Comprendre la structure de configuration](https://github.com/Matthieu68857/pgdayfr_2026_workshop#53-comprendre-la-structure-de-configuration)
    - 5.4. [Lancement du serveur avec Interface UI](https://github.com/Matthieu68857/pgdayfr_2026_workshop#54-lancement-du-serveur-avec-interface-ui)
    - 5.5. [Tester les outils via l'interface visuelle (Toolbox UI)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#55-tester-les-outils-via-linterface-visuelle-toolbox-ui)
-6. [Écrire notre agent avec l'Agent Development Kit (ADK)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#6-écrire-notre-agent-avec-lagent-development-kit-adk)
+6. [Partie 1 : Votre premier agent IA connecté à PostgreSQL (Mono-Agent)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#6-partie-1--votre-premier-agent-ia-connecté-à-postgresql-mono-agent)
    - 6.1. [Comprendre le rôle des agents dans l'ADK](https://github.com/Matthieu68857/pgdayfr_2026_workshop#61-comprendre-le-rôle-des-agents-dans-ladk)
    - 6.2. [Initialisation du projet ADK](https://github.com/Matthieu68857/pgdayfr_2026_workshop#62-initialisation-du-projet-adk)
-7. [Connecter notre agent à nos outils de données météo](https://github.com/Matthieu68857/pgdayfr_2026_workshop#7-connecter-notre-agent-à-nos-outils-de-données-météo)
-   - 7.1. [Modifier le fichier agent.py](https://github.com/Matthieu68857/pgdayfr_2026_workshop#71-modifier-le-fichier-agentpy)
-   - 7.2. [Lancer et Tester l'Agent en Mode Web](https://github.com/Matthieu68857/pgdayfr_2026_workshop#72-lancer-et-tester-lagent-en-mode-web)
-   - 7.3. [Intégrer Google Search pour enrichir les bulletins d'anecdotes](https://github.com/Matthieu68857/pgdayfr_2026_workshop#73-intégrer-google-search-pour-enrichir-les-bulletins-danecdotes)
-8. [Défi : L'Agent DBA et Admin PostgreSQL (Non guidé)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#8-défi--lagent-dba-et-admin-postgresql-non-guidé)
+   - 6.3. [Créer et connecter notre premier agent dans agent.py](https://github.com/Matthieu68857/pgdayfr_2026_workshop#63-créer-et-connecter-notre-premier-agent-dans-agentpy)
+   - 6.4. [Lancer et Tester l'Agent en Mode Web](https://github.com/Matthieu68857/pgdayfr_2026_workshop#64-lancer-et-tester-lagent-en-mode-web)
+7. [Partie 2 : Collaboration Multi-Agents avancée (Orchestration ADK)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#7-partie-2--collaboration-multi-agents-avancée-orchestration-adk)
+   - 7.1. [Comprendre l'intérêt de la collaboration Multi-Agents](https://github.com/Matthieu68857/pgdayfr_2026_workshop#71-comprendre-lintérêt-de-la-collaboration-multi-agents)
+   - 7.2. [Refactoriser agent.py pour implémenter le flux Multi-Agents](https://github.com/Matthieu68857/pgdayfr_2026_workshop#72-refactoriser-agentpy-pour-implémenter-le-flux-multi-agents)
+   - 7.3. [Lancer et Tester l'Équipe d'Agents Météo](https://github.com/Matthieu68857/pgdayfr_2026_workshop#73-lancer-et-tester-léquipe-dagents-météo)
+8. [Partie 3 : Défi - L'Agent DBA et Admin PostgreSQL (Non guidé)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#8-partie-3--défi---lagent-dba-et-admin-postgresql-non-guidé)
    - 8.1. [Le but à atteindre](https://github.com/Matthieu68857/pgdayfr_2026_workshop#81-le-but-à-atteindre)
-   - 8.2. [Grandes lignes pour réussir le défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#82-grandes-lignes-pour-réursir-le-défi)
+   - 8.2. [Grandes lignes pour réussir le défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#82-grandes-lignes-pour-réussir-le-défi)
    - 8.3. [Scénarios de test pour valider votre défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#83-scénarios-de-test-pour-valider-votre-défi)
 9. [Félicitations !](https://github.com/Matthieu68857/pgdayfr_2026_workshop#9-félicitations)
 
@@ -84,6 +86,7 @@ Durée : 5:00
 ```bash
 gcloud auth list
 gcloud config list project
+gcloud auth application-default login
 ```
 
 Si le projet actif n'est pas le bon, définissez-le :
@@ -114,7 +117,7 @@ Exécutez la commande suivante dans votre terminal Cloud Shell pour créer l'ins
 
 ```bash
 gcloud sql instances create weatherdb-instance \
---database-version=POSTGRES_18 \
+--database-version=POSTGRES_17 \
 --tier db-g1-small \
 --region=europe-west1 \
 --edition=ENTERPRISE \
@@ -315,14 +318,14 @@ kind: tool
 name: get-extreme-weather-events
 type: postgres-sql
 source: weather-cloud-sql-source
-description: Recherche les événements météo extrêmes (ex: fortes chaleurs ou fortes pluies).
+description: "Recherche les événements météo extrêmes (ex: fortes chaleurs ou fortes pluies)."
 parameters:
   - name: min_temp
-    type: number
-    description: Le seuil de température minimale en degrés Celsius (ex: 25).
+    type: integer
+    description: "Le seuil de température minimale en degrés Celsius (ex: 25)."
   - name: min_precip
-    type: number
-    description: Le seuil de précipitations minimales en mm (ex: 10).
+    type: integer
+    description: "Le seuil de précipitations minimales en mm (ex: 10)."
 statement: |
   SELECT measure_date, city, temperature, precipitation, conditions
   FROM climat_history
@@ -342,7 +345,7 @@ parameters:
     type: string
     description: Le nom de la ville concernée.
   - name: temperature
-    type: number
+    type: integer
     description: La température prévue en degrés Celsius.
   - name: conditions
     type: string
@@ -362,7 +365,7 @@ source: weather-cloud-sql-source
 description: Met à jour ou corrige le texte et les prévisions d'un bulletin météo existant.
 parameters:
   - name: temperature
-    type: number
+    type: integer
     description: La nouvelle température prévue en degrés Celsius.
   - name: conditions
     type: string
@@ -431,17 +434,17 @@ INFO "Toolbox UI is up and running at: http://127.0.0.1:5000/ui"
 
 ---
 
-## 6. Écrire notre agent avec l'Agent Development Kit (ADK)
+## 6. Partie 1 : Votre premier agent IA connecté à PostgreSQL (Mono-Agent)
 
 Durée : 20:00
 
 L'**Agent Development Kit (ADK)** de Google permet de structurer de véritables agents IA autonomes à l'aide de frameworks Python, capables d'orchestrer dynamiquement des appels d'outils, de planifier des tâches complexes et de tenir des conversations.
 
+Dans cette première partie, nous allons initialiser notre projet Python et créer un premier agent simple (**mono-agent**) capable de se connecter directement à nos requêtes SQL exposées via MCP Toolbox.
+
 ### 6.1. Comprendre le rôle des agents dans l'ADK
 
-Selon la [documentation de l'ADK](https://adk.dev/agents/), un agent est une unité d'exécution autonome conçue pour agir de manière autonome afin d'atteindre des objectifs spécifiques. Les agents peuvent effectuer des tâches, interagir avec les utilisateurs, utiliser des outils externes et se coordonner avec d'autres agents.
-
-Plus précisément, un **`LLMAgent`**, communément appelé Agent, utilise de grands modèles de langage (LLM) comme moteur principal pour comprendre le langage naturel, raisonner, planifier, générer des réponses et décider de manière dynamique de la marche à suivre ou des outils à utiliser, ce qui les rend idéaux pour les tâches flexibles centrées sur le langage. Pour en savoir plus sur les agents LLM, vous pouvez consulter la [documentation ADK sur les agents](https://adk.dev/agents/llm-agents/).
+Selon la [documentation de l'ADK](https://adk.dev/agents/), un agent utilise de grands modèles de langage (LLM) comme moteur principal pour comprendre le langage naturel, raisonner, planifier, générer des réponses et décider de manière dynamique de la marche à suivre ou des outils à utiliser, ce qui les rend idéaux pour les tâches flexibles centrées sur le langage.
 
 ### 6.2. Initialisation du projet ADK
 
@@ -476,17 +479,9 @@ Cela génère l'arborescence suivante dans le dossier `weather_agent_app` :
 * `__init__.py` : Initialise le module Python.
 * `agent.py` : Le fichier de configuration de l'agent.
 
----
+### 6.3. Créer et connecter notre premier agent dans agent.py
 
-## 7. Connecter notre agent à nos outils de données météo
-
-Durée : 10:00
-
-Nous allons configurer notre agent ADK pour qu'il charge dynamiquement l'ensemble d'outils (Toolset) de notre serveur MCP Toolbox, puis l'utiliser pour répondre aux questions des utilisateurs.
-
-### 7.1. Modifier le fichier agent.py
-
-Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le code suivant pour orchestrer nos requêtes SQL :
+Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le code suivant pour orchestrer nos requêtes SQL de lecture et d'écriture :
 
 ```python
 from google.adk.agents import Agent
@@ -500,7 +495,7 @@ toolbox = ToolboxSyncClient("http://127.0.0.1:5000")
 # Cela va inspecter le serveur MCP et récupérer les définitions de nos outils SQL
 weather_tools = toolbox.load_toolset('weather_toolset')
 
-# 3. Définition de l'agent IA Assistant Météo
+# 3. Définition de l'agent IA Assistant Météo Mono-Agent
 root_agent = Agent(
     name="expert_meteo_agent",
     model="gemini-2.5-flash",
@@ -522,7 +517,7 @@ root_agent = Agent(
 )
 ```
 
-### 7.2. Lancer et Tester l'Agent en Mode Web
+### 6.4. Lancer et Tester l'Agent en Mode Web
 
 Depuis votre terminal (en vous assurant d'être dans le dossier parent `my-weather-agents`), lancez le serveur web interactif fourni par l'ADK :
 
@@ -536,28 +531,41 @@ Une fois démarré, vous devriez voir un message indiquant :
 > [!IMPORTANT]
 > **Gestion des ports dans Cloud Shell :**
 > Vous avez maintenant deux serveurs distincts qui s'exécutent en parallèle dans Cloud Shell : le serveur **MCP Toolbox (port 5000)** et l'interface **ADK Web (port 8000)**.
-> Pour basculer de l'un à l'autre, utilisez l'option **Aperçu sur le Web** de Cloud Shell, sélectionnez **Changer de port** et saisissez le port désiré (`5000` ou `8000`). Ne fermez pas vos terminaux actifs, les deux services doivent continuer de tourner en même temps !
+> Pour basculer de l'un à l'autre, utilisez l'option **Aperçu sur le Web** de Cloud Shell, sélectionnez **Changer de port** et saisissez le port désiré (`5000` ou `8000`).
 
 1. Cliquez sur **Aperçu sur le Web** dans Cloud Shell et modifiez le port pour ouvrir le port **`8000`**.
 2. Une interface web moderne d'agent conversationnel apparaît dans votre navigateur !
-3. Saisissez des questions complexes, par exemple :
+3. Saisissez des questions simples, par exemple :
    * *"Quelles villes ont subi des pluies supérieures à 10 mm dans l'historique ?"*
    * *"Fait-il chaud à Lyon en ce moment selon les relevés ?"*
-   * *"Peux-tu rédiger un bulletin météo simple pour Marseille le 26 mai 2026 (27.5°C, ensoleillé) et l'enregistrer dans la base ?"*
-   * *"Il y a une erreur sur le bulletin de Paris du 25 mai 2026 : la température était de 20°C (au lieu de 18.5°C) et c'était 'Très Ensoleillé'. Peux-tu corriger le bulletin existant ?"*
 
-L'agent va analyser vos questions, appeler de façon autonome les outils SQL sécurisés de lecture ou d'écriture, récupérer les résultats et générer un compte-rendu naturel et synthétique.
+L'agent va analyser vos questions, appeler de façon autonome les outils SQL sécurisés de lecture, récupérer les résultats et générer un compte-rendu naturel.
 
 ---
 
-### 7.3. Intégrer Google Search pour enrichir les bulletins d'anecdotes
+## 7. Partie 2 : Collaboration Multi-Agents avancée (Orchestration ADK)
 
-Pour rendre notre assistant météo encore plus captivant, nous allons lui permettre d'enrichir automatiquement ses bulletins rédigés avec des **anecdotes locales historiques ou culturelles** trouvées sur le Web en temps réel.
+Durée : 15:00
 
-Pour cela, nous allons combiner nos outils SQL de base de données avec l'outil de recherche en ligne intégré à l'ADK : **`google_search`**.
+Pour rendre notre assistant météo encore plus captivant, nous voulons qu'il enrichisse automatiquement ses bulletins rédigés avec des **anecdotes locales historiques ou culturelles** trouvées en temps réel sur le Web grâce à l'outil intégré **`google_search`**.
 
-#### **Modifier à nouveau le fichier `agent.py`**
-Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le code suivant :
+Cependant, en environnement de production (comme **Vertex AI**), Google applique une contrainte stricte de sécurité et de formatage : **il est interdit de mélanger l'outil de Grounding Google Search avec des fonctions SQL personnalisées au sein du même agent.** Tenter de le faire lèverait l'erreur :
+`ClientError: 400 INVALID_ARGUMENT. Multiple tools are supported only when they are all search tools.`
+
+C'est ici qu'entre en jeu la **collaboration multi-agents**, l'un des concepts les plus puissants de l'ADK !
+
+### 7.1. Comprendre l'intérêt de la collaboration Multi-Agents
+
+Pour contourner cette restriction de plateforme et modéliser une architecture robuste d'entreprise, nous allons concevoir une **équipe de micro-agents spécialisés** :
+1. Un **Agent Expert SQL** (`db_specialist_agent`) qui possède *uniquement* les outils de base de données.
+2. Un **Agent Chercheur Web** (`web_researcher_agent`) qui possède *uniquement* l'outil `google_search`.
+3. Un **Agent Présentateur Coordinateur** (`presentateur_meteo_agent`) qui n'a aucun outil direct, mais a nos deux spécialistes comme sous-agents (`sub_agents`).
+
+Le Coordinateur va dialoguer de manière autonome avec les sous-agents pour récupérer les prévisions, chercher l'anecdote historique sur le Web, assembler le bulletin météo, puis ordonner son enregistrement en base PostgreSQL. Chaque agent individuel n'ayant que des outils homogènes, le flux s'exécute à la perfection sur Vertex AI !
+
+### 7.2. Refactoriser agent.py pour implémenter le flux Multi-Agents
+
+Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le code d'orchestration multi-agents suivant :
 
 ```python
 from google.adk.agents import Agent
@@ -566,48 +574,79 @@ from toolbox_core import ToolboxSyncClient
 
 # 1. Connexion au serveur MCP local
 toolbox = ToolboxSyncClient("http://127.0.0.1:5000")
-
-# 2. Chargement dynamique du toolset configuré pour la météo
 weather_tools = toolbox.load_toolset('weather_toolset')
 
-# 3. Fusion des outils SQL et de Google Search
-# Nous ajoutons l'outil google_search à notre liste d'outils existants
-all_tools = list(weather_tools) + [google_search]
-
-# 4. Définition de l'agent IA Assistant Météo avec Grounding Web
-root_agent = Agent(
-    name="expert_meteo_agent",
+# =====================================================================
+# AGENT A : Le Spécialiste Base de Données PostgreSQL (SQL homogène)
+# =====================================================================
+db_agent = Agent(
+    name="db_specialist_agent",
     model="gemini-2.5-flash",
     description=(
-        "Un agent IA assistant météo capable de requêter la base de données "
-        "et d'effectuer des recherches d'anecdotes sur le Web en temps réel."
+        "Expert pour interroger la base de données PostgreSQL : "
+        "lire l'historique climatique ou enregistrer/mettre à jour des bulletins météo."
     ),
     instruction=(
-        "Vous êtes un présentateur météo extrêmement chaleureux et passionné d'histoire. "
-        "Votre rôle est d'aider les utilisateurs à concevoir et publier des bulletins météo uniques.\n\n"
-        "Règles strictes d'orchestration :\n"
-        "1. Utilisez les outils SQL pour interroger l'historique météo ou enregistrer/mettre à jour "
-        "les bulletins dans la table `weather_bulletins`.\n"
-        "2. Lorsque vous devez rédiger un bulletin météo pour une ville, utilisez TOUJOURS l'outil "
-        "`google_search` en arrière-plan pour chercher une anecdote insolite, culturelle ou historique "
-        "intéressante sur cette ville.\n"
-        "3. Intégrez harmonieusement cette anecdote dans votre texte de bulletin météo (le champ `bulletin_text`).\n"
-        "4. Enregistrez le bulletin rédigé ainsi enrichi dans la base de données puis faites un résumé à l'utilisateur."
+        "Vous êtes un expert en base de données PostgreSQL. Votre rôle unique "
+        "est d'utiliser vos outils SQL pour exécuter des lectures de relevés climatiques "
+        "ou enregistrer/modifier des bulletins météo dans la table `weather_bulletins`."
     ),
-    tools=all_tools,
+    tools=weather_tools,
+)
+
+# =====================================================================
+# AGENT B : Le Spécialiste Recherche Web (Grounding homogène)
+# =====================================================================
+research_agent = Agent(
+    name="web_researcher_agent",
+    model="gemini-2.5-flash",
+    description=(
+        "Expert pour chercher sur le Web en temps réel des anecdotes historiques, "
+        "insolites ou culturelles sur une ville donnée."
+    ),
+    instruction=(
+        "Vous êtes un chercheur d'anecdotes en ligne hors pair. Votre rôle unique "
+        "est d'utiliser le moteur Google Search pour trouver une anecdote historique, "
+        "culturelle ou insolite passionnante sur une ville donnée et de rédiger le texte final du bulletin."
+    ),
+    tools=[google_search],
+    disallow_transfer_to_parent=True,
+    disallow_transfer_to_peers=True,
+)
+
+# =====================================================================
+# AGENT C : Le Coordinateur / Présentateur (Root Agent)
+# =====================================================================
+root_agent = Agent(
+    name="presentateur_meteo_agent",
+    model="gemini-2.5-flash",
+    description="Le présentateur principal qui coordonne la rédaction et la publication des bulletins.",
+    instruction=(
+        "Vous êtes un présentateur météo extrêmement chaleureux et le chef d'orchestre de cet atelier. "
+        "Votre but est d'aider l'utilisateur à concevoir et publier des bulletins météo uniques.\n\n"
+        "Pour accomplir votre mission, vous devez déléguer les tâches à vos spécialistes de manière autonome :\n"
+        "1. Demandez à `db_specialist_agent` de lire l'historique ou les prévisions météo de la ville.\n"
+        "2. Transmettez ces données météo à `web_researcher_agent` et demandez-lui d'effectuer une recherche d'anecdote en ligne et de rédiger un magnifique bulletin complet.\n"
+        "3. Renvoyez le bulletin rédigé final à `db_specialist_agent` pour qu'il l'enregistre de façon permanente dans la base de données PostgreSQL.\n"
+        "4. Faites une synthèse chaleureuse et structurée en Markdown à l'utilisateur de ce que vous venez d'accomplir."
+    ),
+    sub_agents=[db_agent, research_agent],  # Délégation dynamique autonome
 )
 ```
 
-#### **Tester l'agent avec l'intégration Google Search**
-Relancez le serveur (`adk web` si vous l'aviez arrêté) et demandez-lui :
-* *"Rédige et publie un bulletin météo pour Paris à la date du 26 mai 2026 (température de 19°C et conditions ensoleillées). N'oublie pas d'utiliser Google Search pour y inclure une super anecdote sur Paris !"*
+### 7.3. Lancer et Tester l'Équipe d'Agents Météo
 
-**Validation dans la base de données :**
-Une fois que l'agent a confirmé la publication, rendez-vous dans la console **Cloud SQL Studio** (en vous connectant sur la base **`weather_db`**) et exécutez la requête SQL suivante en tant qu'administrateur `postgres` :
+Relancez le serveur ADK (`adk web` dans votre terminal) et ouvrez la console sur le port `8000`.
+
+Saisissez maintenant des requêtes complexes d'orchestration et de publication :
+* *"Rédige et publie un bulletin météo pour Paris à la date du 26 mai 2026 (température de 19°C et conditions ensoleillées). N'oublie pas de demander à ton chercheur d'anecdotes de trouver une super anecdote sur Paris sur le Web !"*
+
+**Vérification et validation dans la base de données :**
+Une fois que l'agent coordinateur vous a chaleureusement confirmé le succès, connectez-vous à votre console **Cloud SQL Studio** (sur la base `weather_db`) et exécutez la requête d'administration suivante :
 ```sql
 SELECT * FROM weather_bulletins;
 ```
-Vous verrez physiquement apparaître dans votre table SQL le bulletin météo complet contenant l'anecdote historique trouvée en direct par l'intelligence artificielle sur le Web !
+Vous verrez apparaître physiquement le bulletin météo rédigé par le LLM, enrichi de l'anecdote historique exacte trouvée en direct par l'agent web, et stocké de manière pérenne et sécurisée par l'agent SQL dans votre base PostgreSQL !
 
 ---
 
