@@ -1,8 +1,8 @@
-# Bâtir de bout en bout un agent IA expert météo avec PostgreSQL, MCP Toolbox et l'Agent Development Kit (ADK)
+# PGDay France 2026 - Atelier : Créez votre premier agent IA avec PostgreSQL
 
 ## Introduction
 
-Duration: 5:00
+Durée : 5:00
 
 Dans cet atelier pratique, vous allez concevoir, sécuriser et déployer de bout en bout un **agent d'intelligence artificielle expert météo et climat** s'appuyant sur une base de données relationnelle **PostgreSQL**. 
 
@@ -38,7 +38,7 @@ Tout au long de cet atelier, vous suivrez une approche progressive :
 
 ## Avant de commencer
 
-Duration: 5:00
+Durée : 5:00
 
 ### Accéder à votre environnement Google Cloud
 
@@ -75,7 +75,7 @@ gcloud services enable cloudresourcemanager.googleapis.com \
 
 ## Créer l'instance PostgreSQL
 
-Duration: 10:00
+Durée : 10:00
 
 Nous utiliserons une instance **Google Cloud SQL pour PostgreSQL** pour stocker notre historique météo. 
 
@@ -97,7 +97,7 @@ gcloud sql instances create weatherdb-instance \
 
 ## Préparer la base de données météo & Sécurité
 
-Duration: 15:00
+Durée : 15:00
 
 Nous allons maintenant structurer notre base de données historique avec des relevés climatiques, puis mettre en place une gouvernance d'accès stricte pour sécuriser les données sensibles.
 
@@ -214,7 +214,7 @@ CREATE POLICY bulletins_update_policy ON weather_bulletins
 
 ## Configurer MCP Toolbox for databases
 
-Duration: 20:00
+Durée : 20:00
 
 [MCP Toolbox for databases](https://github.com/googleapis/mcp-toolbox) est un serveur MCP open source pour les bases de données. Il a été conçu dans un esprit de qualité de production et de niveau entreprise. Il vous permet de développer des outils plus facilement, plus rapidement et de manière plus sécurisée en gérant les complexités telles que le pooling de connexions, l'authentification, et plus encore.
 
@@ -402,7 +402,7 @@ INFO "Toolbox UI is up and running at: http://127.0.0.1:5000/ui"
 
 ## Écrire notre agent avec l'Agent Development Kit (ADK)
 
-Duration: 20:00
+Durée : 20:00
 
 L'**Agent Development Kit (ADK)** de Google permet de structurer de véritables agents IA autonomes à l'aide de frameworks Python, capables d'orchestrer dynamiquement des appels d'outils, de planifier des tâches complexes et de tenir des conversations.
 
@@ -449,7 +449,7 @@ Cela génère l'arborescence suivante dans le dossier `weather_agent_app` :
 
 ## Connecter notre agent à nos outils de données météo
 
-Duration: 10:00
+Durée : 10:00
 
 Nous allons configurer notre agent ADK pour qu'il charge dynamiquement l'ensemble d'outils (Toolset) de notre serveur MCP Toolbox, puis l'utiliser pour répondre aux questions des utilisateurs.
 
@@ -582,7 +582,7 @@ Vous verrez physiquement apparaître dans votre table SQL le bulletin météo co
 
 ## Partie 2 (Défi) : L'Agent DBA / Admin PostgreSQL (Non guidé)
 
-Duration: 30:00 (À titre indicatif)
+Durée : 30:00 (À titre indicatif)
 
 Pour aller plus loin et tester vos compétences acquises, vous allez concevoir un second agent autonome, cette fois-ci du côté **Administrateur de Base de Données (DBA)**. 
 
