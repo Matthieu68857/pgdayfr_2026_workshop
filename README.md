@@ -559,9 +559,9 @@ C'est ici qu'entre en jeu la **collaboration multi-agents**, l'un des concepts l
 Pour contourner cette restriction de plateforme et modéliser une architecture robuste d'entreprise, nous allons concevoir une **équipe de micro-agents spécialisés** :
 1. Un **Agent Expert SQL** (`db_specialist_agent`) qui possède *uniquement* les outils de base de données.
 2. Un **Agent Chercheur Web** (`web_researcher_agent`) qui possède *uniquement* l'outil `google_search`.
-3. Un **Agent Présentateur Coordinateur** (`presentateur_meteo_agent`) qui n'a aucun outil direct, mais a nos deux spécialistes comme sous-agents (`sub_agents`).
+3. Un **Agent Présentateur Coordinateur** (`presentateur_meteo_agent`) qui n'a aucun outil direct, mais possède nos deux spécialistes sous forme d'outils de fonctions (**`AgentTool`**).
 
-Le Coordinateur va dialoguer de manière autonome avec les sous-agents pour récupérer les prévisions, chercher l'anecdote historique sur le Web, assembler le bulletin météo, puis ordonner son enregistrement en base PostgreSQL. Chaque agent individuel n'ayant que des outils homogènes, le flux s'exécute à la perfection sur Vertex AI !
+Cette architecture avec `AgentTool` permet à l'agent coordinateur de garder le contrôle absolu : il appelle chaque spécialiste de manière séquentielle, récupère leurs résultats comme retour d'outil, et évite tout conflit de type d'outil (Grounding vs SQL) sur Vertex AI !
 
 ### 7.2. Refactoriser agent.py pour implémenter le flux Multi-Agents
 
@@ -569,7 +569,7 @@ Ouvrez le fichier `weather_agent_app/agent.py` et remplacez son contenu par le c
 
 ```python
 from google.adk.agents import Agent
-from google.adk.tools import google_search
+from google.adk.tools import google_search, AgentTool
 from toolbox_core import ToolboxSyncClient
 
 # 1. Connexion au serveur MCP local
@@ -624,13 +624,13 @@ root_agent = Agent(
     instruction=(
         "Vous êtes un présentateur météo extrêmement chaleureux et le chef d'orchestre de cet atelier. "
         "Votre but est d'aider l'utilisateur à concevoir et publier des bulletins météo uniques.\n\n"
-        "Pour accomplir votre mission, vous devez déléguer les tâches à vos spécialistes de manière autonome :\n"
-        "1. Demandez à `db_specialist_agent` de lire l'historique ou les prévisions météo de la ville.\n"
-        "2. Transmettez ces données météo à `web_researcher_agent` et demandez-lui d'effectuer une recherche d'anecdote en ligne et de rédiger un magnifique bulletin complet.\n"
-        "3. Renvoyez le bulletin rédigé final à `db_specialist_agent` pour qu'il l'enregistre de façon permanente dans la base de données PostgreSQL.\n"
+        "Pour accomplir votre mission, vous devez appeler vos micro-agents spécialisés en tant qu'outils de la manière suivante :\n"
+        "1. Appelez `db_specialist_agent` et demandez-lui de lire l'historique ou les prévisions météo de la ville (par exemple pour Paris au 26 mai 2026).\n"
+        "2. Transmettez ces données météo à `web_researcher_agent` et demandez-lui de faire une recherche d'anecdote en ligne et de rédiger un magnifique bulletin complet.\n"
+        "3. Renvoyez le bulletin rédigé final à `db_specialist_agent` pour qu'il l'enregistre de façon permanente dans la base de données PostgreSQL via l'outil `publish-weather-bulletin`.\n"
         "4. Faites une synthèse chaleureuse et structurée en Markdown à l'utilisateur de ce que vous venez d'accomplir."
     ),
-    sub_agents=[db_agent, research_agent],  # Délégation dynamique autonome
+    tools=[AgentTool(db_agent), AgentTool(research_agent)],  # Usage of AgentTool instead of sub_agents
 )
 ```
 
