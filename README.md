@@ -29,7 +29,11 @@
    - 8.1. [Le but à atteindre](https://github.com/Matthieu68857/pgdayfr_2026_workshop#81-le-but-à-atteindre)
    - 8.2. [Grandes lignes pour réussir le défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#82-grandes-lignes-pour-réussir-le-défi)
    - 8.3. [Scénarios de test pour valider votre défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#83-scénarios-de-test-pour-valider-votre-défi)
-9. [Félicitations !](https://github.com/Matthieu68857/pgdayfr_2026_workshop#9-félicitations)
+9. [Défi Ultime : RAG sémantique & Embeddings 100% natifs dans PostgreSQL (Non guidé - Niveau Expert)](https://github.com/Matthieu68857/pgdayfr_2026_workshop#9-défi-ultime--rag-sémantique--embeddings-100-natifs-dans-postgresql-non-guidé---niveau-expert)
+   - 9.1. [Le But et le Scénario](https://github.com/Matthieu68857/pgdayfr_2026_workshop#91-le-but-et-le-scénario)
+   - 9.2. [Les Contraintes et Étapes de Réalisation](https://github.com/Matthieu68857/pgdayfr_2026_workshop#92-les-contraintes-et-étapes-de-réalisation)
+   - 9.3. [Scénarios de Test pour Valider le Défi](https://github.com/Matthieu68857/pgdayfr_2026_workshop#93-scénarios-de-test-pour-valider-le-défi)
+10. [Félicitations !](https://github.com/Matthieu68857/pgdayfr_2026_workshop#10-félicitations)
 
 ---
 
@@ -48,6 +52,7 @@ Tout au long de cet atelier, vous suivrez une approche progressive :
 3. **SQL as a Tool** : Configurer et lancer **MCP Toolbox for databases** pour transformer des requêtes SQL de lecture et d'écriture en capacités cognitives exposées au LLM.
 4. **Orchestration avec l'ADK** : Développer un agent IA assistant météo intelligent capable de requêter vos tables de relevés météo et de rédiger et publier des bulletins enrichis d'anecdotes trouvées sur le Web grâce à Google Search.
 5. **Défi DBA / Admin (Non guidé)** : Concevoir un second agent expert en administration de bases de données PostgreSQL pour analyser la santé, les performances et l'optimisation de votre instance.
+6. **Défi Ultime - PostgreSQL + IA (Non guidé)** : Bâtir de toutes pièces une architecture de RAG et d'embeddings 100% native dans PostgreSQL en couplant `pgvector`, `google_ml_integration` (Vertex AI) et des Triggers automatiques PL/pgSQL.
 
 ---
 
@@ -55,6 +60,7 @@ Tout au long de cet atelier, vous suivrez une approche progressive :
 * Concevoir et construire un agent IA assistant météo capable d'analyser des historiques climatiques, de rédiger et publier des bulletins météo enrichis d'anecdotes et de répondre aux requêtes des utilisateurs.
 * Sécuriser l'accès à la base de données PostgreSQL de sorte que le LLM ne puisse jamais accéder ou altérer des données confidentielles (secret défense/stations militaires), même en cas de tentative d'injection de requêtes.
 * Relever le défi de créer un agent DBA/Admin pour monitorer votre base de données PostgreSQL en langage naturel.
+* Réaliser une intégration IA poussée et 100% native dans PostgreSQL (RAG, pgvector, triggers d'embeddings automatiques).
 
 #### **Ce que vous allez apprendre**
 * Provisionner et structurer une base de données Cloud SQL pour PostgreSQL (avec tables de relevés et de bulletins rédigés).
@@ -62,6 +68,7 @@ Tout au long de cet atelier, vous suivrez une approche progressive :
 * Configurer un serveur MCP Toolbox pour exposer vos requêtes SQL de façon sécurisée.
 * Utiliser l'ADK (Agent Development Kit) en Python pour créer et exécuter un agent IA interactif et connecté à vos outils SQL.
 * Créer des outils MCP interrogeant les tables système et statistiques de PostgreSQL pour surveiller la base de données.
+* Configurer une architecture RAG moderne intégralement gérée par le moteur PostgreSQL via des triggers PL/pgSQL et Vertex AI.
 
 #### **Ce dont vous aurez besoin**
 * Un navigateur web
@@ -714,7 +721,62 @@ Une fois l'agent fonctionnel, testez-le dans la console interactive en posant de
 
 ---
 
-## 9. Félicitations !
+## 9. Défi Ultime : RAG sémantique & Embeddings 100% natifs dans PostgreSQL (Non guidé - Niveau Expert)
+
+> [!WARNING]
+> **Zone de haute technicité :** Cette partie finale est entièrement non guidée. C'est à vous de concevoir l'architecture de base de données, d'activer les extensions appropriées, d'écrire le code PL/pgSQL nécessaire et de configurer les requêtes de recherche vectorielle.
+
+### 9.1. Le But et le Scénario
+
+Actuellement, votre agent météo effectue des recherches textuelles exactes (avec l'opérateur SQL `ILIKE`). Pour passer à une architecture moderne d'IA de niveau entreprise, nous voulons implémenter du **RAG (Retrieval-Augmented Generation)** avec une recherche sémantique.
+
+Cependant, **nous voulons que la base de données PostgreSQL gère 100% de l'intelligence !** 
+Plutôt que d'écrire du code Python complexe pour appeler des API d'embeddings à chaque insertion ou recherche, nous allons déléguer ces tâches de vectorisation directement au moteur de base de données PostgreSQL grâce aux extensions **`pgvector`** et **`google_ml_integration`** (Vertex AI).
+
+---
+
+### 9.2. Les Contraintes et Étapes de Réalisation
+
+Pour réussir ce défi ultime, vous devez implémenter l'architecture suivante en totale autonomie :
+
+1. **Activation des extensions d'IA dans PostgreSQL** :
+   - Connectez-vous à votre base `weather_db` et activez les extensions `vector` (pour la gestion des vecteurs) et `google_ml_integration` (pour appeler Vertex AI directement depuis le SQL).
+   - N'oubliez pas d'accorder les privilèges d'exécution sur ces extensions à votre utilisateur restreint `agent_user`.
+
+2. **Stockage et calcul automatique des embeddings par Trigger (SQL)** :
+   - Ajoutez une colonne `embedding` de type `vector(768)` (dimension du modèle de Vertex AI `text-embedding-005`) à votre table `weather_bulletins`.
+   - Écrivez une **fonction de trigger PL/pgSQL** et associez-la à un trigger (`BEFORE INSERT OR UPDATE`) sur la table `weather_bulletins`. 
+   - Ce trigger doit automatiquement appeler la fonction `google_ml.embedding('text-embedding-005', NEW.bulletin_text)` pour générer le vecteur d'embedding associé au texte du bulletin et le stocker dans la colonne `embedding`.
+   - *Avantage :* Dès que l'agent ou un utilisateur écrit un bulletin via l'outil SQL classique, la base PostgreSQL génère et indexe sémantiquement la donnée en tâche de fond de façon transparente !
+
+3. **Exposition de l'outil de recherche sémantique dans la Toolbox** :
+   - Déclarez un nouvel outil dans votre fichier `tools.yaml` (par exemple `search-similar-bulletins`).
+   - Cet outil doit accepter un unique paramètre de recherche textuel en langage naturel (ex. `query`).
+   - La requête SQL doit appeler `google_ml.embedding` sur la requête de recherche textuelle, puis calculer la distance cosinus (`<=>`) avec les vecteurs stockés pour retourner les 3 bulletins les plus proches sémantiquement.
+
+4. **Orchestration et RAG dans l'ADK** :
+   - Connectez ce nouvel outil SQL à votre agent dans l'ADK.
+   - Testez l'orchestration en lui demandant de faire de véritables synthèses sémantiques à partir de bulletins historiques existants.
+
+---
+
+### 9.3. Scénarios de Test pour Valider le Défi
+
+Une fois implémenté, validez votre architecture grâce aux tests suivants :
+
+1. **Test d'indexation automatique** :
+   - Demandez à votre agent de rédiger et publier un bulletin contenant le texte suivant :
+     *"Aujourd'hui à Strasbourg, le soleil brille de mille feux avec une chaleur étouffante de 32°C. Prenez vos précautions contre la canicule."*
+   - Allez dans Cloud SQL Studio et vérifiez que la colonne `embedding` de ce nouveau bulletin a été **automatiquement calculée et peuplée** par votre trigger PostgreSQL.
+
+2. **Test de recherche sémantique (RAG)** :
+   - Posez à votre agent une question conceptuelle, par exemple :
+     *"Recherche dans les anciens bulletins s'il y a des conseils pour se protéger de la chaleur ou des vagues de chaleur extremes."*
+   - **Validation :** L'agent doit appeler votre outil de recherche sémantique, trouver le bulletin de Strasbourg (grâce à la proximité sémantique entre "vagues de chaleur" et "canicule"), récupérer le texte exact, et vous fournir une réponse synthétisée chaleureuse.
+
+---
+
+## 10. Félicitations !
 
 Vous avez construit avec succès un agent IA **expert météo de bout en bout** connecté à une base de données **PostgreSQL** via l'architecture **MCP**.
 
