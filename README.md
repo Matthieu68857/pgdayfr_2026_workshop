@@ -81,21 +81,7 @@ Durée : 5:00
 1. Connectez-vous à la [Console Google Cloud](https://console.cloud.google.com/) en utilisant les identifiants fournis par les organisateurs.
 2. Assurez-vous que le projet Google Cloud attribué est bien sélectionné en haut de la page.
 3. Activez **Cloud Shell** en cliquant sur l'icône en haut à droite de la console.
-4. Authentifiez-vous et configurez votre projet actif dans Cloud Shell :
-
-```bash
-gcloud auth list
-gcloud config list project
-gcloud auth application-default login
-```
-
-Si le projet actif n'est pas le bon, définissez-le :
-
-```bash
-gcloud config set project <YOUR_PROJECT_ID>
-```
-
-5. Activez les API requises (cela peut prendre quelques minutes) :
+4. Activez les API requises (cela peut prendre quelques minutes) :
 
 ```bash
 gcloud services enable cloudresourcemanager.googleapis.com \
@@ -444,7 +430,7 @@ Dans cette première partie, nous allons initialiser notre projet Python et cré
 
 ### 6.1. Comprendre le rôle des agents dans l'ADK
 
-Selon la [documentation de l'ADK](https://adk.dev/agents/), un agent utilise de grands modèles de langage (LLM) comme moteur principal pour comprendre le langage naturel, raisonner, planifier, générer des réponses et décider de manière dynamique de la marche à suivre ou des outils à utiliser, ce qui les rend idéaux pour les tâches flexibles centrées sur le langage.
+Un agent utilise de grands modèles de langage (LLM) comme moteur principal pour comprendre le langage naturel, raisonner, planifier, générer des réponses et décider de manière dynamique de la marche à suivre ou des outils à utiliser, ce qui les rend idéaux pour les tâches flexibles centrées sur le langage.
 
 ### 6.2. Initialisation du projet ADK
 
@@ -552,11 +538,6 @@ L'agent va analyser vos questions, appeler de façon autonome les outils SQL sé
 Durée : 15:00
 
 Pour rendre notre assistant météo encore plus captivant, nous voulons qu'il enrichisse automatiquement ses bulletins rédigés avec des **anecdotes locales historiques ou culturelles** trouvées en temps réel sur le Web grâce à l'outil intégré **`google_search`**.
-
-Cependant, en environnement de production (comme **Vertex AI**), Google applique une contrainte stricte de sécurité et de formatage : **il est interdit de mélanger l'outil de Grounding Google Search avec des fonctions SQL personnalisées au sein du même agent.** Tenter de le faire lèverait l'erreur :
-`ClientError: 400 INVALID_ARGUMENT. Multiple tools are supported only when they are all search tools.`
-
-C'est ici qu'entre en jeu la **collaboration multi-agents**, l'un des concepts les plus puissants de l'ADK !
 
 ### 7.1. Comprendre l'intérêt de la collaboration Multi-Agents
 
