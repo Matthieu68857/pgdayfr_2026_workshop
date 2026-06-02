@@ -522,8 +522,12 @@ root_agent = Agent(
 Depuis votre terminal (en vous assurant d'être dans le dossier parent `my-weather-agents`), lancez le serveur web interactif fourni par l'ADK :
 
 ```bash
-adk web
+adk web --allow_origins "*"
 ```
+
+> [!IMPORTANT]
+> **Accès via Google Cloud Shell (CORS / Erreur 403 Forbidden) :**
+> Comme vous utilisez **Google Cloud Shell**, l'aperçu web passe par un proxy sécurisé (`googleusercontent.com`). Pour éviter une erreur `403 Forbidden` ou `Impossible de créer la session` lors de l'envoi de vos questions, vous **devez** impérativement ajouter l'option `--allow_origins "*"` lors du lancement de la commande `adk web`.
 
 Une fois démarré, vous devriez voir un message indiquant :
 `For local testing, access at http://127.0.0.1:8000`
@@ -636,7 +640,7 @@ root_agent = Agent(
 
 ### 7.3. Lancer et Tester l'Équipe d'Agents Météo
 
-Relancez le serveur ADK (`adk web` dans votre terminal) et ouvrez la console sur le port `8000`.
+Relancez le serveur ADK (`adk web --allow_origins "*"` dans votre terminal) et ouvrez la console sur le port `8000`.
 
 Saisissez maintenant des requêtes complexes d'orchestration et de publication :
 * *"Rédige et publie un bulletin météo pour Paris à la date du 26 mai 2026 (température de 19°C et conditions ensoleillées). N'oublie pas de demander à ton chercheur d'anecdotes de trouver une super anecdote sur Paris sur le Web !"*
